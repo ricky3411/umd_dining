@@ -43,7 +43,6 @@ class _main_pageState extends State<main_page> {
   final _biggerFont = const TextStyle(fontSize: 18.0);
   final food_items = <String>[];
   final food_database = <String>["pizza", "hamburger", "chicken", "quesadilla"];
-  var index = 0;
 
   String food = "";
 
@@ -84,9 +83,27 @@ class _main_pageState extends State<main_page> {
                 : Row(
                     children: [
                       MaterialButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          ListView.builder(
+                            padding: const EdgeInsets.all(16.0),
+                            itemBuilder: /*1*/ (context, i) {
+                              if (i.isOdd) return const Divider(); /*2*/
+
+                              final index = i ~/ 2; /*3*/
+                              if (index >= food_items.length) {
+                                food_items.addAll(food_database.take(3)); /*4*/
+                              }
+                              return ListTile(
+                                title: Text(
+                                  food_items[0],
+                                  style: _biggerFont,
+                                ),
+                              );
+                            },
+                          );
+                        },
                         child: Text(
-                          'Scrap Data',
+                          '250 Diner',
                           style: TextStyle(color: Colors.white),
                         ),
                         color: Colors.blue,
@@ -94,24 +111,6 @@ class _main_pageState extends State<main_page> {
                     ],
                   ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.08),
-
-            ListView.builder(
-              padding: const EdgeInsets.all(16.0),
-              itemBuilder: /*1*/ (context, i) {
-                if (i.isOdd) return const Divider(); /*2*/
-
-                final index = i ~/ 2; /*3*/
-                if (index >= food_items.length) {
-                  food_items.addAll(food_database.take(3)); /*4*/
-                }
-                return ListTile(
-                  title: Text(
-                    food_items[index],
-                    style: _biggerFont,
-                  ),
-                );
-              },
-            ),
           ],
         )),
       ),
