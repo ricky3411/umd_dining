@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:html/parser.dart' as parser;
-import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const MyApp());
@@ -39,32 +37,78 @@ class main_page extends StatefulWidget {
 }
 
 class _main_pageState extends State<main_page> {
- 
+  bool isLoading = false;
+
+  String diner_name1 = '251 Diner';
+  String diner_name2 = 'The Diner';
+  String diner_name3 = 'South Campus Diner';
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('UMD Dining App')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('UMD DINING HALL MENU'),
+        ),
+        body: Container(
+          child: Center(
             child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: []
-            // if isLoading is true show loader
-            // else show Column of Texts
-            
-                        },
-                        child: Text(
-                          '250 Diner',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        color: Colors.blue,
-                      )
-                    
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                //251 Dining Hall Button
+
+                RaisedButton(
+                  child: Text(
+                    "251 Diner Menu",
+                    style: TextStyle(fontSize: 30),
                   ),
-          
-        )
-      );
+                  onPressed: _changeText,
+                  color: Color.fromARGB(255, 230, 45, 31),
+                  textColor: Color.fromARGB(255, 255, 255, 255),
+                  padding: EdgeInsets.all(30.0),
+                  splashColor: Color.fromARGB(255, 199, 96, 96),
+                ),
+
+                //The Diner Dining Hall Button
+
+                RaisedButton(
+                  child: Text(
+                    "The Diner Menu",
+                    style: TextStyle(fontSize: 30),
+                  ),
+                  onPressed: _changeText,
+                  color: Color.fromARGB(255, 0, 0, 0),
+                  textColor: Color.fromARGB(255, 255, 255, 255),
+                  padding: EdgeInsets.all(30.0),
+                  splashColor: Colors.grey,
+                )
+
+                //South Campus Dining Hall Button
+                ,
+                RaisedButton(
+                  child: Text(
+                    "The Diner Menu",
+                    style: TextStyle(fontSize: 30),
+                  ),
+                  onPressed: _changeText,
+                  color: Color.fromARGB(255, 255, 235, 80),
+                  textColor: Color.fromARGB(255, 255, 255, 255),
+                  padding: EdgeInsets.all(30.0),
+                  splashColor: Color.fromARGB(255, 248, 237, 136),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  _changeText() {
+    setState(() {
+      if (diner_name1.startsWith('')) {
+        diner_name1 = '';
+      }
+    });
   }
 }
