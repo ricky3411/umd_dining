@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:html/parser.dart' as parser;
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const MyApp());
@@ -24,27 +26,9 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.red,
           secondaryHeaderColor: Colors.yellow),
-      home: main_page(title: 'UMD Dining sMenu'),
+      home: main_page(title: 'UMD Dining Menu'),
     );
   }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class main_page extends StatefulWidget {
@@ -56,15 +40,37 @@ class main_page extends StatefulWidget {
 
 class _main_pageState extends State<main_page> {
   bool isLoading = false;
+  final _biggerFont = const TextStyle(fontSize: 18.0);
+  final food_items = <String>[];
+  final food_database = <String>["pizza", "hamburger", "chicken", "quesadilla"];
+  var index = 0;
 
-  String diner_name1 = '250 Diner';
-  String diner_name2 = 'The Diner';
-  String diner_name3 = 'South Campus Diner';
+  String food = "";
+
+  Future<List<String>> extractData() async {
+    // getting response from the targeted url
+    final response = await http.Client().get(Uri.parse(
+        'https://nutrition.umd.edu/shortmenu.aspx?sName=%3cfont+style%3d%22color%3aRed%22%3eDining+%40+Maryland%3c%2ffont%3e&locationNum=04&locationName=%3cfont+style%3d%22color%3aRed%22%3eThe+Diner%3c%2ffont%3e&naFlag=1'));
+    if (response.statusCode == 200) {
+      var document = parser.parse(response.body);
+
+      try {
+        var food_title = document.getElementsByClassName('shortmenumeals')[0];
+        print(food_title);
+
+        return [food_title.text.trim()];
+      } catch (e) {
+        return ['', '', 'ERROR!'];
+      }
+    } else {
+      return ['', '', 'ERROR: ${response.statusCode}.'];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('GeeksForGeeks')),
+      appBar: AppBar(title: Text('UMD Dining App')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
@@ -88,14 +94,24 @@ class _main_pageState extends State<main_page> {
                     ],
                   ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.08),
-            MaterialButton(
-              onPressed: () {},
-              child: Text(
-                'Scrap Data',
-                style: TextStyle(color: Colors.white),
-              ),
-              color: Colors.blue,
-            )
+
+            ListView.builder(
+              padding: const EdgeInsets.all(16.0),
+              itemBuilder: /*1*/ (context, i) {
+                if (i.isOdd) return const Divider(); /*2*/
+
+                final index = i ~/ 2; /*3*/
+                if (index >= food_items.length) {
+                  food_items.addAll(food_database.take(3)); /*4*/
+                }
+                return ListTile(
+                  title: Text(
+                    food_items[index],
+                    style: _biggerFont,
+                  ),
+                );
+              },
+            ),
           ],
         )),
       ),
